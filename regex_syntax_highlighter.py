@@ -19,13 +19,12 @@ class RegexSyntaxHighlighter(QtGui.QSyntaxHighlighter):
     for each matched group. 
     """
 
-    def __init__(self, parent: QtGui.QTextDocument, regex: QtWidgets.QLineEdit, match_all_cb: QtWidgets.QCheckBox, reng: RegexEngine) -> None:
+    def __init__(self, parent: QtGui.QTextDocument, mainwindow: QtWidgets.QMainWindow) -> None:
         super().__init__(parent)
-
-        # save a reference to the QPlainTextEdit containing the regex to match
-        self.regex = regex
-        self.match_all_cb = match_all_cb
-        self.reng = reng
+        self.mainwindow = mainwindow
+        self.regex: QtWidgets.QLineEdit = mainwindow.main.regex_le
+        self.reng: RegexEngine = mainwindow.reng
+        self.match_all_cb: QtWidgets.QCheckBox = mainwindow.main.find_all_matches_cb
 
     def __format_block__(self, group_id: int) -> QtGui.QTextCharFormat:
         """ Returns the format to use.
@@ -33,8 +32,10 @@ class RegexSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         Returns the format with the foreground and background colors to use for
         the passed group_id
         """
+
         format = QtGui.QTextCharFormat()
-        color = QtGui.QColor(highlight_colors[group_id % len(highlight_colors)])
+        color = QtGui.QColor(
+            highlight_colors[group_id % len(highlight_colors)])
         if (color.red() * 0.299 + color.green() * 0.587 + color.blue() * 0.114) > 186:
             format.setForeground(QtGui.QColor("#050505"))
         format.setBackground(color)
@@ -48,10 +49,13 @@ class RegexSyntaxHighlighter(QtGui.QSyntaxHighlighter):
 
         The regex engine used is from the pyregexp library.
         """
-        # return super().highlightBlock(text)
+        # clears any error previously shown
+        self.mainwindow.main.error_pte.setPlainText('')
+
         try:
+            case_sensitivity = self.mainwindow.get_case_sensitivity()
             res, _, matches = self.reng.match(
-                self.regex.text(), text, True, self.match_all_cb.isChecked())
+                self.regex.text(), text, True, self.match_all_cb.isChecked(), case_sensitivity)
             if not res:
                 return
             for matched_groups in matches:
@@ -62,5 +66,6 @@ class RegexSyntaxHighlighter(QtGui.QSyntaxHighlighter):
                     self.setFormat(match.start_idx, match.end_idx-match.start_idx,
                                    self.__format_block__(match.group_id))
         except Exception as e:
+            self.mainwindow.main.error_pte.setPlainText(repr(e))
             pass
         self.setCurrentBlockState(0)

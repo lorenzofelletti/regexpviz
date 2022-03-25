@@ -49,7 +49,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Find all matches</string>
+          <string>Find All Matches</string>
          </property>
          <property name="checked">
           <bool>true</bool>
@@ -68,6 +68,57 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="case_sensitive_rb">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string>Case Sensitive</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="case_insensitive_rb">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string>Case insensitive</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="casefold_rb">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string>Casefold</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
