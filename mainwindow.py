@@ -150,12 +150,14 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
                 i += 1
 
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
+def main():
     app = QApplication()
 
     # loads Roboto Mono font
-    QFontDatabase.addApplicationFont(
-        'resources/RobotoMono/static/RobotoMono-Regular.ttf')
+    #QFontDatabase.addApplicationFont(
+    #    'resources/RobotoMono/static/RobotoMono-Regular.ttf')
+    QFontDatabase.addApplicationFont('RobotoMono-Regular.ttf')
 
     # randomize the highlight colors order
     random.shuffle(highlight_colors)
