@@ -52,11 +52,16 @@ class RegexSyntaxHighlighter(QtGui.QSyntaxHighlighter):
         # clears any error previously shown
         self.mainwindow.main.error_pte.setPlainText('')
 
+        if len(self.regex.text()) == 0:
+            self.mainwindow.__print_matches__()
+            return
+
         try:
             case_sensitivity = self.mainwindow.get_case_sensitivity()
             res, _, matches = self.reng.match(
                 self.regex.text(), text, True, self.match_all_cb.isChecked(), case_sensitivity)
             if not res:
+                self.mainwindow.__print_matches__()
                 return
             for matched_groups in matches:
                 for match in matched_groups:

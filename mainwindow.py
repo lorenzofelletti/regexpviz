@@ -1,8 +1,8 @@
-from typing import List, Literal, Tuple
+from typing import List, Literal, Tuple, Union
 
-from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QPlainTextEdit, QWidget, QCheckBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QFontDatabase, QStandardItemModel, QStandardItem
+from PySide6.QtGui import QFontDatabase, QStandardItemModel
 from PySide6.QtCore import Qt
 from qt_material import QtStyleTools
 
@@ -36,6 +36,13 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
         self.apply_stylesheet(self.main.test_string_pte, 'dark_teal.xml', extra={
                               'font_family': 'Roboto Mono', })
 
+        # table rows width
+        header = self.main.matches_tbl.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.Stretch)
+
         # enables the syntax highlighting
         self.syntax_highlighter = RegexSyntaxHighlighter(
             self.main.test_string_pte.document(), self)
@@ -60,7 +67,7 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
         """
         self.main.test_string_pte.setPlainText(
             self.main.test_string_pte.toPlainText())
-        #self.__print_matches__()
+        # self.__print_matches__()
 
     def __case_sensitivity_state__(self) -> Tuple[bool, bool, bool]:
         """ Return a tuple representing the state of the case sensitivity radio buttons.
@@ -86,6 +93,10 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
     def __print_matches__(self) -> None:
         regex = self.main.regex_le.text()
         test_str = self.main.test_string_pte.toPlainText()
+
+        if len(regex) == 0:
+            self.__create_matches_table__()
+            return
         try:
             case_sensitivity = self.get_case_sensitivity()
             res, _, matches = self.reng.match(
@@ -94,14 +105,17 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
         except Exception as e:
             pass
 
-    def __create_matches_table__(self, matches: List[List[Match]]) -> QStandardItemModel:
+    def __create_matches_table__(self, matches: Union[List[List[Match]], None] = None) -> None:
+        if matches is None:
+            self.main.matches_tbl.setRowCount(0)
+            return
         rows = 0
         for match in matches:
             rows += len(match)
 
         #self.main.matches_tbl = QTableWidget(rows,4)
         self.main.matches_tbl.setRowCount(rows)
-        self.main.matches_tbl.setColumnCount(4)
+        # self.main.matches_tbl.setColumnCount(4)
 
         if len(matches) == 0:
             return
@@ -119,9 +133,12 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
                 self.main.matches_tbl.setItem(i, 2, end_item)
 
                 #matched_item = QTableWidgetItem('"' + match_group.match + '"')
-                start_idx = match_group.start_idx if match_group.start_idx < len(test_str) else len(test_str)-1
-                end_idx = match_group.end_idx if match_group.end_idx < len(test_str) else len(test_str)
-                matched_item = QTableWidgetItem('"' + test_str[start_idx:end_idx] + '"')
+                start_idx = match_group.start_idx if match_group.start_idx < len(
+                    test_str) else len(test_str)-1
+                end_idx = match_group.end_idx if match_group.end_idx < len(
+                    test_str) else len(test_str)
+                matched_item = QTableWidgetItem(
+                    '"' + test_str[start_idx:end_idx] + '"')
                 self.main.matches_tbl.setItem(i, 3, matched_item)
                 i += 1
 
@@ -131,7 +148,7 @@ if __name__ == "__main__":
 
     # loads Roboto Mono font
     QFontDatabase.addApplicationFont(
-        'resources/RobotoMono/RobotoMono-VariableFont_wght.ttf')
+        'resources/RobotoMono/static/RobotoMono-Regular.ttf')
 
     # randomize the highlight colors order
     random.shuffle(highlight_colors)
