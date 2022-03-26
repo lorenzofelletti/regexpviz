@@ -65,6 +65,7 @@ class RegexSyntaxHighlighter(QtGui.QSyntaxHighlighter):
                         raise Exception(f"Unexpected match result: {err}.")
                     self.setFormat(match.start_idx, match.end_idx-match.start_idx,
                                    self.__format_block__(match.group_id))
+            self.mainwindow.__print_matches__()
         except Exception as e:
             self.mainwindow.main.error_pte.setPlainText(repr(e))
             pass

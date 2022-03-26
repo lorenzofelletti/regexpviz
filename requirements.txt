@@ -19,7 +19,7 @@ pylint==2.12.2
 PyQt6==6.2.3
 PyQt6-Qt6==6.2.3
 PyQt6-sip==13.2.1
-pyregexp==0.2.2
+pyregexp==0.2.3
 PySide6==6.2.3
 python-lsp-jsonrpc==1.0.0
 python-lsp-server==1.4.0

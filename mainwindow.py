@@ -60,8 +60,7 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
         """
         self.main.test_string_pte.setPlainText(
             self.main.test_string_pte.toPlainText())
-        #self.syntax_highlighter.highlightBlock(self.main.test_string_pte.toPlainText())
-        self.__print_matches__()
+        #self.__print_matches__()
 
     def __case_sensitivity_state__(self) -> Tuple[bool, bool, bool]:
         """ Return a tuple representing the state of the case sensitivity radio buttons.
@@ -107,6 +106,7 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
         if len(matches) == 0:
             return
         i = 0
+        test_str = self.main.test_string_pte.toPlainText()
         for match in matches:
             for match_group in match:
                 name_item = QTableWidgetItem(match_group.name)
@@ -118,7 +118,10 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
                 end_item = QTableWidgetItem(str(match_group.end_idx))
                 self.main.matches_tbl.setItem(i, 2, end_item)
 
-                matched_item = QTableWidgetItem(match_group.match)
+                #matched_item = QTableWidgetItem('"' + match_group.match + '"')
+                start_idx = match_group.start_idx if match_group.start_idx < len(test_str) else len(test_str)-1
+                end_idx = match_group.end_idx if match_group.end_idx < len(test_str) else len(test_str)
+                matched_item = QTableWidgetItem('"' + test_str[start_idx:end_idx] + '"')
                 self.main.matches_tbl.setItem(i, 3, matched_item)
                 i += 1
 
