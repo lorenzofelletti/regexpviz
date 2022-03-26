@@ -2,7 +2,7 @@ from typing import List, Literal, Tuple, Union
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QFontDatabase, QStandardItemModel
+from PySide6.QtGui import QFontDatabase, QPalette
 from PySide6.QtCore import Qt
 from qt_material import QtStyleTools
 
@@ -67,7 +67,6 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
         """
         self.main.test_string_pte.setPlainText(
             self.main.test_string_pte.toPlainText())
-        # self.__print_matches__()
 
     def __case_sensitivity_state__(self) -> Tuple[bool, bool, bool]:
         """ Return a tuple representing the state of the case sensitivity radio buttons.
@@ -102,7 +101,7 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
             res, _, matches = self.reng.match(
                 regex, test_str, True, self.main.find_all_matches_cb.isChecked(), case_sensitivity)  # test_str
             self.__create_matches_table__(matches)
-        except Exception as e:
+        except Exception:  # as e:
             pass
 
     def __create_matches_table__(self, matches: Union[List[List[Match]], None] = None) -> None:
@@ -123,23 +122,31 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
         test_str = self.main.test_string_pte.toPlainText()
         for match in matches:
             for match_group in match:
-                name_item = QTableWidgetItem(match_group.name)
-                self.main.matches_tbl.setItem(i, 0, name_item)
+                # group name item
+                item = QTableWidgetItem(
+                    match_group.name if not match_group.name == "Group 0" else "RegExp")
+                item.setTextAlignment(Qt.AlignCenter)
+                self.main.matches_tbl.setItem(i, 0, item)
 
-                start_item = QTableWidgetItem(str(match_group.start_idx))
-                self.main.matches_tbl.setItem(i, 1, start_item)
+                # start idx item
+                item = QTableWidgetItem(str(match_group.start_idx))
+                item.setTextAlignment(Qt.AlignCenter)
+                self.main.matches_tbl.setItem(i, 1, item)
 
-                end_item = QTableWidgetItem(str(match_group.end_idx))
-                self.main.matches_tbl.setItem(i, 2, end_item)
+                # end idx item
+                item = QTableWidgetItem(str(match_group.end_idx))
+                item.setTextAlignment(Qt.AlignCenter)
+                self.main.matches_tbl.setItem(i, 2, item)
 
-                #matched_item = QTableWidgetItem('"' + match_group.match + '"')
+                # match item (with indexes avoiding out of bound exception)
                 start_idx = match_group.start_idx if match_group.start_idx < len(
                     test_str) else len(test_str)-1
                 end_idx = match_group.end_idx if match_group.end_idx < len(
                     test_str) else len(test_str)
-                matched_item = QTableWidgetItem(
+                item = QTableWidgetItem(
                     '"' + test_str[start_idx:end_idx] + '"')
-                self.main.matches_tbl.setItem(i, 3, matched_item)
+                item.setTextAlignment(Qt.AlignCenter)
+                self.main.matches_tbl.setItem(i, 3, item)
                 i += 1
 
 
