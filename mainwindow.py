@@ -2,7 +2,7 @@ from typing import List, Literal, Tuple, Union
 
 from PySide6.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QHeaderView
 from PySide6.QtUiTools import QUiLoader
-from PySide6.QtGui import QFontDatabase, QPalette
+from PySide6.QtGui import QFontDatabase
 from PySide6.QtCore import Qt
 from qt_material import QtStyleTools
 
