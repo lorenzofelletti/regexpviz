@@ -46,6 +46,7 @@ class RuntimeStylesheets(QMainWindow, QtStyleTools):
         # enables the syntax highlighting
         self.syntax_highlighter = RegexSyntaxHighlighter(
             self.main.test_string_pte.document(), self)
+        # triggers syntax highlighting when necessary
         self.main.regex_le.textChanged.connect(self.__trigger_highlight__)
         self.main.find_all_matches_cb.stateChanged.connect(
             self.__trigger_highlight__)
